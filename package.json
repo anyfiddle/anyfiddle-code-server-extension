@@ -2,6 +2,7 @@
   "name": "anyfiddle-code-server",
   "displayName": "Anyfiddle Code Server",
   "description": "Integrates Anyfiddle features with CodeServer",
+  "publisher": "anyfiddle",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.49.0"
