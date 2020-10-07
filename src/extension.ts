@@ -10,27 +10,10 @@ let runCommandStatusBarItem: vscode.StatusBarItem;
 let portMappingStatusBarItem: vscode.StatusBarItem;
 
 export async function activate(context: vscode.ExtensionContext) {
-  // Run Command
-  // Preview Command
-  // Open files and folders
-
-  // /**
-  //  * Run command
-  //  */
-  // vscode.window.terminals[0].sendText('npm start');
-  // vscode.window.showTextDocument(vscode.);
-  // /**
-  //  * Open preview
-  //  */
-  // vscode.env.openExternal(vscode.Uri.parse('https://localhost'));
-  // /**
-  //  * Open file
-  //  */
-  // const document = await vscode.workspace.openTextDocument(
-  //   '/Users/joji/Work/Anyfiddle/code/runner-proxy/package.json'
-  // );
-  // vscode.window.showTextDocument(document);
   if (vscode.workspace.workspaceFolders) {
+    /**
+     * Get Anyfiddle JSON
+     */
     const folder = vscode.workspace.workspaceFolders[0];
     const anyfiddleJsonUri = vscode.Uri.joinPath(folder.uri, 'anyfiddle.json');
 
@@ -44,27 +27,13 @@ export async function activate(context: vscode.ExtensionContext) {
     } catch (e) {}
     console.log('Anyfiddle JSON', anyfiddleJson);
 
-    if (anyfiddleJson.defaultCommand) {
-      runCommandStatusBarItem = vscode.window.createStatusBarItem(
-        vscode.StatusBarAlignment.Left,
-        1
-      );
-      runCommandStatusBarItem.text = 'Run';
-      runCommandStatusBarItem.show();
-
-      const runCommandId = 'anyfiddle.runCommand';
-      vscode.commands.registerCommand(runCommandId, () => {
-        if (anyfiddleJson.defaultCommand) {
-          vscode.window.terminals[0].sendText(anyfiddleJson.defaultCommand);
-        }
-      });
-      runCommandStatusBarItem.command = runCommandId;
-    }
-
+    /**
+     * Get port mapping and show status bar item
+     */
     if (anyfiddleJson.port) {
       portMappingStatusBarItem = vscode.window.createStatusBarItem(
         vscode.StatusBarAlignment.Left,
-        1
+        2
       );
       portMappingStatusBarItem.text = `Port ${anyfiddleJson.port} => https://dev-123213.anyfiddle.run`;
       portMappingStatusBarItem.show();
@@ -80,8 +49,31 @@ export async function activate(context: vscode.ExtensionContext) {
       portMappingStatusBarItem.command = openPreviewCommandId;
     }
 
-    const rootUri = vscode.workspace.workspaceFolders[0].uri;
+    /**
+     * Get Default command and show status bar item
+     */
+    if (anyfiddleJson.defaultCommand) {
+      runCommandStatusBarItem = vscode.window.createStatusBarItem(
+        vscode.StatusBarAlignment.Left,
+        1
+      );
+      runCommandStatusBarItem.text = 'RUN';
+      runCommandStatusBarItem.show();
 
+      const runCommandId = 'anyfiddle.runCommand';
+      vscode.commands.registerCommand(runCommandId, () => {
+        if (anyfiddleJson.defaultCommand) {
+          vscode.window.terminals[0].sendText(anyfiddleJson.defaultCommand);
+          vscode.window.terminals[0].show();
+        }
+      });
+      runCommandStatusBarItem.command = runCommandId;
+    }
+
+    /**
+     * Open files as per anyfiddle json
+     */
+    const rootUri = vscode.workspace.workspaceFolders[0].uri;
     if (anyfiddleJson.openFiles) {
       anyfiddleJson.openFiles.forEach(async (filename) => {
         const document = await vscode.workspace.openTextDocument(
@@ -90,6 +82,15 @@ export async function activate(context: vscode.ExtensionContext) {
         vscode.window.showTextDocument(document);
       });
     }
+  }
+
+  /**
+   * Open first terminal
+   */
+  const terminals = vscode.window.terminals;
+  if (terminals.length === 0) {
+    const terminal = vscode.window.createTerminal();
+    terminal.show();
   }
 }
 
