@@ -36,23 +36,21 @@ export async function activate(context: vscode.ExtensionContext) {
     }
 
     const projectId = process.env.ANYFIDDLE_PROJECT_ID;
-    if(projectId) {
+    if (projectId) {
+      const previewUrl = `https://${projectId}.anyfiddle.run`;
       portMappingStatusBarItem = vscode.window.createStatusBarItem(
         vscode.StatusBarAlignment.Right,
         2
       );
-      portMappingStatusBarItem.text = `$(plug) Port ${port} => https://${projectId}.anyfiddle.run`;
+      portMappingStatusBarItem.text = `$(plug) Port ${port} => ${previewUrl}`;
       portMappingStatusBarItem.show();
 
       const openPreviewCommandId = 'anyfiddle.openPreview';
       vscode.commands.registerCommand(openPreviewCommandId, () => {
-        vscode.env.openExternal(
-          vscode.Uri.parse('https://dev-123213.anyfiddle.run')
-        );
+        vscode.env.openExternal(vscode.Uri.parse(previewUrl));
       });
       portMappingStatusBarItem.command = openPreviewCommandId;
     }
-  
 
     /**
      * Get Default command and show status bar item

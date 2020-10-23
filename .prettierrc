@@ -2,19 +2,5 @@
   "tabWidth": 2,
   "useTabs": false,
   "singleQuote": true,
-  "semi": true,
-  "overrides": [
-    {
-      "files": "**.yaml",
-      "options": {
-        "singleQuote": false
-      }
-    },
-    {
-      "files": "database/migrations/*",
-      "options": {
-        "printWidth": 10000
-      }
-    }
-  ]
+  "semi": true
 }
