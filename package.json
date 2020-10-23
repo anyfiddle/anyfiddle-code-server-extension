@@ -17,8 +17,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "anyfiddle-code-server.helloWorld",
-        "title": "Hello World"
+        "command": "anyfiddle.openPreview",
+        "title": "Anyfiddle: Open preview for mapped port"
+      },
+      {
+        "command": "anyfiddle.runCommand",
+        "title": "Anyfiddle: Run"
       }
     ]
   },

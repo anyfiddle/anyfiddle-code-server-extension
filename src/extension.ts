@@ -25,39 +25,44 @@ export async function activate(context: vscode.ExtensionContext) {
     try {
       anyfiddleJson = JSON.parse(anyfiddleJsonText);
     } catch (e) {}
-    console.log('Anyfiddle JSON', anyfiddleJson);
 
     /**
      * Get port mapping and show status bar item
      */
+
+    let port = 8080;
     if (anyfiddleJson.port) {
+      port = anyfiddleJson.port;
+    }
+
+    const projectId = process.env.ANYFIDDLE_PROJECT_ID;
+    if(projectId) {
       portMappingStatusBarItem = vscode.window.createStatusBarItem(
-        vscode.StatusBarAlignment.Left,
+        vscode.StatusBarAlignment.Right,
         2
       );
-      portMappingStatusBarItem.text = `Port ${anyfiddleJson.port} => https://dev-123213.anyfiddle.run`;
+      portMappingStatusBarItem.text = `$(plug) Port ${port} => https://${projectId}.anyfiddle.run`;
       portMappingStatusBarItem.show();
 
       const openPreviewCommandId = 'anyfiddle.openPreview';
       vscode.commands.registerCommand(openPreviewCommandId, () => {
-        if (anyfiddleJson.port) {
-          vscode.env.openExternal(
-            vscode.Uri.parse('https://dev-123213.anyfiddle.run')
-          );
-        }
+        vscode.env.openExternal(
+          vscode.Uri.parse('https://dev-123213.anyfiddle.run')
+        );
       });
       portMappingStatusBarItem.command = openPreviewCommandId;
     }
+  
 
     /**
      * Get Default command and show status bar item
      */
     if (anyfiddleJson.defaultCommand) {
       runCommandStatusBarItem = vscode.window.createStatusBarItem(
-        vscode.StatusBarAlignment.Left,
+        vscode.StatusBarAlignment.Right,
         1
       );
-      runCommandStatusBarItem.text = 'RUN';
+      runCommandStatusBarItem.text = '$(play) Run';
       runCommandStatusBarItem.show();
 
       const runCommandId = 'anyfiddle.runCommand';
